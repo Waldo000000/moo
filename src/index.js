@@ -4,6 +4,7 @@ var app = require('express')();
 var bodyParser = require('body-parser');
 var cowsay = require('cowsay');
 var parser = require('./parser');
+var request = require('request');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,9 +36,13 @@ app.post('/', function(req, res) {
 
   var responseText = '```' + cowsay.say({ text: text, e: eyes, T: tongue }) + '```';
 
-  return res.send({
-    response_type: 'in_channel',
-    text: responseText,
+  res.sendStatus(200);
+  request.post({
+    url: req.body.response_url,
+    json: {
+      response_type: 'in_channel',
+      text: responseText,
+    }
   });
 });
 
